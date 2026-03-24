@@ -164,9 +164,8 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const errorText = document.getElementById('errorText');
 
-        // --- GOOGLE SHEETS API FETCHING LOGIC ---
-        // MAKE SURE THIS IS YOUR CORRECT SHEET ID
-        const sheetId = '1Ezqokpwi8i1e0J8NUqKnWMgLuWeGcedoG3AHZNhnFMY'; 
+        // --- NEW GOOGLE SHEET ID ADDED HERE ---
+        const sheetId = '1e-zaoXGOuE3a8g5yx1xkAcnuxmAYF18AbdcjGrv3nBY'; 
         const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=0`;
 
         async function fetchLatestReading() {
@@ -183,6 +182,10 @@
                 
                 // Get valid rows
                 const rows = jsonData.table.rows;
+                
+                // --- COLUMN CONFIGURATION ---
+                // If your moisture is in Column B, use row.c[1]
+                // If your moisture is in Column C, change row.c[1] to row.c[2]
                 const validRows = rows.filter(row => row && row.c && row.c[0] && row.c[1] && typeof row.c[1].v === 'number');
                 
                 if(validRows.length === 0) throw new Error("No numeric data found in sheet");
@@ -190,16 +193,13 @@
                 // GRAB ONLY THE VERY LAST ROW
                 const latestRow = validRows[validRows.length - 1]; 
                 
-                // COLUMN A (Index 0): Time/Date
-                // COLUMN B (Index 1): Moisture reading
                 let timestampRaw = latestRow.c[0].f || String(latestRow.c[0].v); 
                 let moistureValue = latestRow.c[1].v;               
                 
                 // Update UI: Large Number
-                liveValueDisplay.innerText = moistureValue.toFixed(1); // Showing 1 decimal place
+                liveValueDisplay.innerText = moistureValue.toFixed(1); 
 
-                // Update UI: Progress Bar (Assuming value is between 0 and 100)
-                // Constrain between 0 and 100 so the CSS width doesn't break if sensor reads 105%
+                // Update UI: Progress Bar (Constrain between 0 and 100)
                 let barPercentage = Math.max(0, Math.min(100, moistureValue));
                 moistureProgressBar.style.width = `${barPercentage}%`;
 
@@ -214,7 +214,7 @@
                 errorText.classList.remove('hidden');
                 liveValueDisplay.innerText = "--";
                 moistureProgressBar.style.width = "0%";
-                loadingOverlay.classList.add('hidden'); // Hide loading so they can see the error
+                loadingOverlay.classList.add('hidden'); 
             }
         }
 
