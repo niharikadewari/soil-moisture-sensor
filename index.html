@@ -67,7 +67,7 @@
                         <img src="IMG_20260325_111452.jpg" alt="Experimental Farm" class="absolute inset-0 w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4 text-white">
-                            
+                            <h3 class="text-2xl font-bold mb-1">Experimental Farm </h3>
                             <p class="text-gray-200 font-medium tracking-wide">Experimental Farm, Almora</p>
                         </div>
                     </div>
@@ -76,30 +76,35 @@
                         <h4 class="text-lg font-semibold text-emerald-800 mb-4 border-b pb-2"><i class="fa-solid fa-layer-group mr-2"></i>Deployment Details</h4>
                         <ul class="space-y-4 text-sm text-gray-600">
                             <li class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-location-crosshairs"></i></div>
+                                <div class="w-8 h-8 shrink-0 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><i class="fa-solid fa-location-dot"></i></div>
                                 <div>
-                                     <li class="flex items-start gap-3">
-                                <i class="fa-solid fa-location-dot mt-1 text-emerald-600 w-4"></i>
-                                <span><strong>Location:</strong> Experimental Farm Halwalbagh, ICAR-VPKAS, Almora</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fa-solid fa-map-pin mt-1 text-emerald-600 w-4"></i>
-                                <span><strong>Lat/Long:</strong> 29.6359°N, 79.6289°E</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <i class="fa-solid fa-mountain mt-1 text-emerald-600 w-4"></i>
-                                <span><strong>Elevation:</strong> 1,224m</span>
+                                    <p class="font-bold text-gray-800">Location</p>
+                                    <p>Experimental Farm Halwalbagh, ICAR-VPKAS, Almora</p>
                                 </div>
                             </li>
                             <li class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fa-solid fa-microchip"></i></div>
+                                <div class="w-8 h-8 shrink-0 rounded-full bg-teal-100 flex items-center justify-center text-teal-600"><i class="fa-solid fa-satellite"></i></div>
+                                <div>
+                                    <p class="font-bold text-gray-800">Lat/Long</p>
+                                    <p>29.6359°N, 79.6289°E</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 shrink-0 rounded-full bg-orange-100 flex items-center justify-center text-orange-600"><i class="fa-solid fa-mountain"></i></div>
+                                <div>
+                                    <p class="font-bold text-gray-800">Elevation</p>
+                                    <p>1,224m</p>
+                                </div>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <div class="w-8 h-8 shrink-0 rounded-full bg-blue-100 flex items-center justify-center text-blue-600"><i class="fa-solid fa-microchip"></i></div>
                                 <div>
                                     <p class="font-bold text-gray-800">Hardware</p>
                                     <p>Capacitive Soil Moisture Sensor (v1.2)</p>
                                 </div>
                             </li>
                             <li class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"><i class="fa-solid fa-ruler-vertical"></i></div>
+                                <div class="w-8 h-8 shrink-0 rounded-full bg-purple-100 flex items-center justify-center text-purple-600"><i class="fa-solid fa-ruler-vertical"></i></div>
                                 <div>
                                     <p class="font-bold text-gray-800">Installation Depth</p>
                                     <p>5 cm (Active Root Zone)</p>
@@ -181,39 +186,29 @@
             errorText.classList.add('hidden');
             
             try {
-                // Fetch the data
                 const response = await fetch(gvizUrl + '&t=' + new Date().getTime());
                 const text = await response.text();
                 
-                // Clean API JSON
                 const jsonString = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
                 const jsonData = JSON.parse(jsonString);
                 
-                // Get valid rows
                 const rows = jsonData.table.rows;
-                
-                // Filter for numeric data in Column B (index 1)
                 const validRows = rows.filter(row => row && row.c && row.c[0] && row.c[1] && typeof row.c[1].v === 'number');
                 
                 if(validRows.length === 0) throw new Error("No numeric data found in sheet");
 
-                // GRAB ONLY THE VERY LAST ROW
                 const latestRow = validRows[validRows.length - 1]; 
                 
                 let timestampRaw = latestRow.c[0].f || String(latestRow.c[0].v); 
                 let moistureValue = latestRow.c[1].v;               
                 
-                // Update UI: Large Number
                 liveValueDisplay.innerText = moistureValue.toFixed(1); 
 
-                // Update UI: Progress Bar (Constrain between 0 and 100)
                 let barPercentage = Math.max(0, Math.min(100, moistureValue));
                 moistureProgressBar.style.width = `${barPercentage}%`;
 
-                // Update UI: Timestamp
                 lastUpdatedText.innerHTML = `<i class="fa-regular fa-clock mr-2 text-emerald-500"></i> Recorded: <span class="text-gray-700">${timestampRaw}</span>`;
 
-                // Hide Loading Screen
                 loadingOverlay.classList.add('hidden');
 
             } catch (error) {
