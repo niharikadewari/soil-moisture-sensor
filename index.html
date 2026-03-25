@@ -64,7 +64,7 @@
             <div class="lg:col-span-5 space-y-6">
                 <div class="glass-card rounded-2xl shadow-md overflow-hidden h-full">
                     <div class="relative h-64 w-full bg-gray-200">
-                        <img src="Picture1.jpg" alt="Experimental Farm" class="absolute inset-0 w-full h-full object-cover">
+                        <img src="IMG_20260325_111452.jpg" alt="Experimental Farm" class="absolute inset-0 w-full h-full object-cover">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                         <div class="absolute bottom-4 left-4 right-4 text-white">
                             <h3 class="text-2xl font-bold mb-1">Experimental Farm </h3>
@@ -164,7 +164,7 @@
         const loadingOverlay = document.getElementById('loadingOverlay');
         const errorText = document.getElementById('errorText');
 
-        // --- NEW GOOGLE SHEET ID ADDED HERE ---
+        // --- GOOGLE SHEET ID ---
         const sheetId = '1e-zaoXGOuE3a8g5yx1xkAcnuxmAYF18AbdcjGrv3nBY'; 
         const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&gid=0`;
 
@@ -183,9 +183,7 @@
                 // Get valid rows
                 const rows = jsonData.table.rows;
                 
-                // --- COLUMN CONFIGURATION ---
-                // If your moisture is in Column B, use row.c[1]
-                // If your moisture is in Column C, change row.c[1] to row.c[2]
+                // Filter for numeric data in Column B (index 1)
                 const validRows = rows.filter(row => row && row.c && row.c[0] && row.c[1] && typeof row.c[1].v === 'number');
                 
                 if(validRows.length === 0) throw new Error("No numeric data found in sheet");
